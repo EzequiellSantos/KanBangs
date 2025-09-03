@@ -1,23 +1,52 @@
 const express = require('express');
 const router = express.Router();
 const Board = require('../models/Board');
+const Column = require('../models/Column');
+const Task = require('../models/Task');
 const auth = require('../middleware/auth');
 
 // Middleware de autenticação em todas as rotas abaixo
 router.use(auth);
 
-// GET todos os boards do usuário logado
+// GET todos os boards do usuário logado, com colunas e tarefas
 router.get('/', async (req, res) => {
   try {
-    const boards = await Board.find({ userId: req.user._id }).populate({
-      path: 'columns',
-      populate: { path: 'tasks' }
-    });
-    res.json(boards);
+    // 1. Buscar boards do usuário e popular colunas
+    const boards = await Board.find({ userId: req.user._id })
+      .populate('columns')
+      .lean(); // importante para manipular os dados depois
+
+    // 2. Para cada board, buscar tasks de cada coluna
+    const boardsComTarefas = await Promise.all(
+      boards.map(async (board) => {
+        const columnsWithTasks = await Promise.all(
+          (board.columns || []).map(async (col) => {
+            const tasks = await Task.find({ columnId: col._id }).lean();
+            return {
+              ...col,
+              tasks: tasks || []
+            };
+          })
+        );
+
+        return {
+          ...board,
+          columns: columnsWithTasks
+        };
+      })
+    );
+
+    // 3. Responder com boards + colunas + tasks
+    res.json({ error: null, data: boardsComTarefas });
   } catch (err) {
-    res.status(500).json({ error: 'Erro ao buscar boards', message: err.message });
+    console.error('[GET /boards] Erro:', err);
+    res.status(500).json({
+      error: 'Erro ao buscar boards',
+      message: err.message
+    });
   }
 });
+
 
 // POST criar novo board
 router.post('/', async (req, res) => {

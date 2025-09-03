@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const boardSchema = new mongoose.Schema({
-  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  title: { type: String, required: true },
-  desc: { type: String },
-}, { timestamps: true });
+  title: String,
+  desc: String,
+  columns: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Column' }]
+  // outros campos...
+})
 
-module.exports = mongoose.model('Board', boardSchema);
+module.exports = mongoose.model('Board', boardSchema)

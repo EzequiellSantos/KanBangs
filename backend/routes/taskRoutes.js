@@ -37,7 +37,9 @@ router.delete('/:id', async (req, res) => {
     res.sendStatus(204).json({ message: 'Tarefa removida com sucesso', data: task });
 
   } catch (error) {
-w  }
+    console.error('Erro ao remover tarefa:', error);
+    res.status(500).json({ message: 'Erro ao remover tarefa', error });
+  }
 
 });
 

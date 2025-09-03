@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kanban Domarco - Login</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ===== VARIÁVEIS E RESET ===== */
+    :root {
+      --bg: #0f1724;
+      --card: #0b1220;
+      --accent: #06b6d4;
+      --accent-hover: #0891b2;
+      --muted: #94a3b8;
+      --text: #e6eef8;
+      --error: #ef4444;
+      --success: #10b981;
+      --radius: 12px;
+      --transition: all 0.3s ease;
+    }
+
+    [data-theme="light"] {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --accent: #0ea5e9;
+      --accent-hover: #0284c7;
+      --muted: #64748b;
+      --text: #1e293b;
+      --error: #dc2626;
+      --success: #059669;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      transition: var(--transition);
+      line-height: 1.6;
+    }
+
+    /* ===== LAYOUT PRINCIPAL ===== */
+    .login-container {
+      display: flex;
+      width: 100%;
+      max-width: 1000px;
+      min-height: 600px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .login-left {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      color: white;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-right {
+      flex: 1;
+      background: var(--card);
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* ===== ELEMENTOS VISUAIS ===== */
+    .graphic-element {
+      position: absolute;
+      opacity: 0.1;
+    }
+
+    .graphic-1 {
+      top: -50px;
+      right: -50px;
+      width: 200px;
+      height: 200px;
+      border: 8px solid white;
+      border-radius: 50%;
+    }
+
+    .graphic-2 {
+      bottom: -30px;
+      left: -30px;
+      width: 150px;
+      height: 150px;
+      border: 6px solid white;
+      border-radius: 20px;
+      transform: rotate(45deg);
+    }
+
+    .graphic-3 {
+      top: 50%;
+      left: 30%;
+      width: 80px;
+      height: 80px;
+      border: 4px solid white;
+      border-radius: 50%;
+    }
+
+    /* ===== CONTEÚDO ===== */
+    .welcome-content h1 {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      font-weight: 800;
+    }
+
+    .welcome-content p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+
+    .features-list {
+      list-style: none;
+      margin-top: 30px;
+    }
+
+    .features-list li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 1rem;
+    }
+
+    .features-list i {
+      margin-right: 12px;
+      background: rgba(255, 255, 255, 0.2);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ===== FORMULÁRIO ===== */
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .login-header h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--accent);
+    }
+
+    .login-header p {
+      color: var(--muted);
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+    }
+
+    .input-with-icon input {
+      width: 100%;
+      padding: 15px 15px 15px 45px;
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    [data-theme="light"] .input-with-icon input {
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .input-with-icon input:focus {
+      border-color: var(--accent);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+    }
+
+    .options-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      margin-right: 8px;
+    }
+
+    .forgot-password {
+      color: var(--accent);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .forgot-password:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: 15px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-login:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-login:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 30px 0;
+      color: var(--muted);
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--muted);
+      opacity: 0.3;
+    }
+
+    .divider span {
+      padding: 0 15px;
+      font-size: 0.9rem;
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .social-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    [data-theme="light"] .social-btn {
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .social-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 20px;
+      color: var(--muted);
+    }
+
+    .signup-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .signup-link a:hover {
+      color: var(--accent-hover);
+      text-decoration: underline;
+    }
+
+    /* ===== ALERTAS ===== */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    .alert-error {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+
+    .alert-success {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .alert i {
+      margin-right: 10px;
+    }
+
+    /* ===== THEME TOGGLE ===== */
+    .theme-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 24px;
+      background: var(--muted);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .toggle-switch.active {
+      background: var(--accent);
+    }
+
+    .toggle-knob {
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+
+    .toggle-switch.active .toggle-knob {
+      transform: translateX(26px);
+    }
+
+    /* ===== RESPONSIVIDADE ===== */
+    @media (max-width: 900px) {
+      .login-container {
+        flex-direction: column;
+        max-width: 500px;
+      }
+      
+      .login-left {
+        padding: 30px;
+        order: 2;
+      }
+      
+      .login-right {
+        padding: 30px;
+        order: 1;
+      }
+      
+      .welcome-content h1 {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+      
+      .login-left, .login-right {
+        padding: 25px;
+      }
+      
+      .options-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .welcome-content h1 {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* ===== ANIMAÇÕES ===== */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+
+    /* ===== MODAL DE REGISTRO ===== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 500px;
+      padding: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      position: relative;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      color: var(--accent);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .modal-footer {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    /* ===== KANBAN CONTAINER (inicialmente oculto) ===== */
+    #kanbanContainer {
+      display: none;
+      width: 100%;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      background: var(--bg);
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="theme-toggle">
+    <div class="toggle-switch" id="themeToggle">
+      <div class="toggle-knob">🌙</div>
+    </div>
+  </div>
+
+  <div class="login-container" id="loginContainer">
+    <div class="login-left">
+      <div class="graphic-element graphic-1"></div>
+      <div class="graphic-element graphic-2"></div>
+      <div class="graphic-element graphic-3"></div>
+      
+      <div class="welcome-content">
+        <h1 class="animate-in">Organize suas tarefas com eficiência</h1>
+        <p class="animate-in delay-1">Acesse seu Kanban pessoal e aumente sua produtividade</p>
+        
+        <ul class="features-list">
+          <li class="animate-in delay-2">
+            <i class="fas fa-check"></i>
+            <span>Quadros ilimitados para seus projetos</span>
+          </li>
+          <li class="animate-in delay-3">
+            <i class="fas fa-check"></i>
+            <span>Sincronização em tempo real</span>
+          </li>
+          <li class="animate-in delay-4">
+            <i class="fas fa-check"></i>
+            <span>Interface arrasta e solta intuitiva</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="login-right">
+      <div class="login-header animate-in">
+        <h2>Entrar no Kanban</h2>
+        <p>Use suas credenciais para acessar sua conta</p>
+      </div>
+      
+      <form id="loginForm" class="animate-in delay-1">
+        <div class="form-group">
+          <label for="email">E-mail</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" name="password" placeholder="Sua senha" required>
+          </div>
+        </div>
+        
+        <div class="options-row">
+          <label class="remember-me">
+            <input type="checkbox" name="remember">
+            Lembrar-me
+          </label>
+          <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        </div>
+        
+        <button type="submit" class="btn-login">Entrar</button>
+      </form>
+      
+      <div class="divider animate-in delay-2">
+        <span>Ou continue com</span>
+      </div>
+      
+      <div class="social-login animate-in delay-3">
+        <button type="button" class="social-btn">
+          <i class="fab fa-google"></i>
+        </button>
+        <button type="button" class="social-btn">
+          <i class="fab fa-github"></i>
+        </button>
+        <button type="button" class="social-btn">
+          <i class="fab fa-microsoft"></i>
+        </button>
+      </div>
+      
+      <div class="signup-link animate-in delay-4">
+        Não tem uma conta? <a href="#" id="showRegister">Criar conta</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Registro -->
+  <div class="modal-backdrop" id="registerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Criar uma conta</h2>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="registerName">Nome completo</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="registerName" name="name" placeholder="Seu nome completo" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerEmail">E-mail</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="registerEmail" name="email" placeholder="seu@email.com" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerPassword">Senha</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="registerPassword" name="password" placeholder="Crie uma senha segura" required minlength="6">
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="registerConfirmPassword">Confirmar senha</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="registerConfirmPassword" name="confirmPassword" placeholder="Digite a senha novamente" required>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-login">Criar conta</button>
+      </form>
+      
+      <div class="modal-footer">
+        <div class="signup-link">
+          Já tem uma conta? <a href="#" id="showLogin">Fazer login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container para o Kanban (será preenchido após login) -->
+  <div id="kanbanContainer"></div>
+
+  <script>
+    // Dados de usuários (simulando um banco de dados)
+    const users = JSON.parse(localStorage.getItem('kanbanUsers')) || [];
+    
+    // Elementos da interface
+    const themeToggle = document.getElementById('themeToggle');
+    const body = document.body;
+    const loginContainer = document.getElementById('loginContainer');
+    const loginForm = document.getElementById('loginForm');
+    const registerModal = document.getElementById('registerModal');
+    const registerForm = document.getElementById('registerForm');
+    const showRegisterBtn = document.getElementById('showRegister');
+    const showLoginBtn = document.getElementById('showLogin');
+    const closeModalBtn = document.getElementById('closeModal');
+    const kanbanContainer = document.getElementById('kanbanContainer');
+
+    // Verificar preferência de tema salva
+    if (localStorage.getItem('theme') === 'light') {
+      body.setAttribute('data-theme', 'light');
+      themeToggle.classList.add('active');
+      themeToggle.querySelector('.toggle-knob').textContent = '☀️';
+    }
+    
+    // Alternar tema
+    themeToggle.addEventListener('click', () => {
+      if (body.getAttribute('data-theme') === 'dark') {
+        body.setAttribute('data-theme', 'light');
+        themeToggle.classList.add('active');
+        themeToggle.querySelector('.toggle-knob').textContent = '☀️';
+        localStorage.setItem('theme', 'light');
+      } else {
+        body.setAttribute('data-theme', 'dark');
+        themeToggle.classList.remove('active');
+        themeToggle.querySelector('.toggle-knob').textContent = '🌙';
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+    
+    // Mostrar modal de registro
+    showRegisterBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerModal.style.display = 'flex';
+    });
+    
+    // Fechar modal de registro
+    closeModalBtn.addEventListener('click', () => {
+      registerModal.style.display = 'none';
+    });
+    
+    // Mostrar formulário de login
+    showLoginBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      registerModal.style.display = 'none';
+    });
+    
+    // Fechar modal ao clicar fora dele
+    registerModal.addEventListener('click', (e) => {
+      if (e.target === registerModal) {
+        registerModal.style.display = 'none';
+      }
+    });
+    
+    // Processar registro de nova conta
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('registerName').value;
+      const email = document.getElementById('registerEmail').value;
+      const password = document.getElementById('registerPassword').value;
+      const confirmPassword = document.getElementById('registerConfirmPassword').value;
+      
+      // Validações
+      if (password !== confirmPassword) {
+        showAlert('As senhas não coincidem.', 'error', registerForm);
+        return;
+      }
+      
+      if (password.length < 6) {
+        showAlert('A senha deve ter pelo menos 6 caracteres.', 'error', registerForm);
+        return;
+      }
+      
+      // Verificar se o usuário já existe
+      if (users.find(user => user.email === email)) {
+        showAlert('Este e-mail já está em uso.', 'error', registerForm);
+        return;
+      }
+      
+      // Criar novo usuário
+      const newUser = {
+        id: Date.now().toString(),
+        name,
+        email,
+        password, // Em um sistema real, isso seria criptografado
+        createdAt: new Date().toISOString()
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('kanbanUsers', JSON.stringify(users));
+      
+      showAlert('Conta criada com sucesso! Você já pode fazer login.', 'success', registerForm);
+      
+      // Limpar formulário
+      registerForm.reset();
+      
+      // Fechar modal após 2 segundos
+      setTimeout(() => {
+        registerModal.style.display = 'none';
+      }, 2000);
+    });
+    
+    // Processar login
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.querySelector('input[name="remember"]').checked;
+      
+      // Verificar credenciais
+      const user = users.find(u => u.email === email && u.password === password);
+      
+      if (user) {
+        showAlert('Login realizado com sucesso!', 'success', loginForm);
+        
+        // Salvar sessão do usuário
+        const session = {
+          userId: user.id,
+          email: user.email,
+          name: user.name,
+          loggedInAt: new Date().toISOString()
+        };
+        
+        if (rememberMe) {
+          localStorage.setItem('kanbanSession', JSON.stringify(session));
+        } else {
+          sessionStorage.setItem('kanbanSession', JSON.stringify(session));
+        }
+        
+        // Redirecionar para o Kanban após 1 segundo
+        setTimeout(() => {
+          loadKanban();
+        }, 1000);
+      } else {
+        showAlert('E-mail ou senha incorretos.', 'error', loginForm);
+      }
+    });
+    
+    // Verificar se já existe uma sessão ativa
+    function checkExistingSession() {
+      const session = JSON.parse(localStorage.getItem('kanbanSession') || sessionStorage.getItem('kanbanSession') || 'null');
+      
+      if (session) {
+        // Verificar se a sessão expirou (24 horas)
+        const loginTime = new Date(session.loggedInAt);
+        const currentTime = new Date();
+        const hoursDiff = Math.abs(currentTime - loginTime) / 36e5;
+        
+        if (hoursDiff < 24) {
+          loadKanban();
+          return true;
+        } else {
+          // Sessão expirada
+          localStorage.removeItem('kanbanSession');
+          sessionStorage.removeItem('kanbanSession');
+        }
+      }
+      
+      return false;
+    }
+    
+    // Carregar o Kanban
+    function loadKanban() {
+      loginContainer.style.display = 'none';
+      kanbanContainer.style.display = 'block';
+      
+      // Carregar o conteúdo do Kanban
+      fetch('melhor versão.html')
+        .then(response => response.text())
+        .then(html => {
+          kanbanContainer.innerHTML = html;
+          
+          // Adicionar botão de logout
+          const sidebar = kanbanContainer.querySelector('.sidebar');
+          if (sidebar) {
+            const logoutBtn = document.createElement('button');
+            logoutBtn.className = 'ghost';
+            logoutBtn.innerHTML = '🚪 Sair';
+            logoutBtn.style.marginTop = '20px';
+            logoutBtn.style.width = '100%';
+            logoutBtn.addEventListener('click', logout);
+            sidebar.appendChild(logoutBtn);
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao carregar o Kanban:', error);
+          kanbanContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 20px; text-align: center;">
+              <h2>Kanban Carregado com Sucesso!</h2>
+              <p>Você está autenticado e pronto para usar o sistema Kanban.</p>
+              <button onclick="logout()" class="btn-login" style="margin-top: 20px; max-width: 200px;">Sair</button>
+            </div>
+          `;
+        });
+    }
+    
+    // Função de logout
+    function logout() {
+      localStorage.removeItem('kanbanSession');
+      sessionStorage.removeItem('kanbanSession');
+      kanbanContainer.style.display = 'none';
+      loginContainer.style.display = 'flex';
+      loginForm.reset();
+    }
+    
+    // Mostrar alertas
+    function showAlert(message, type, form) {
+      // Remove alertas existentes
+      const existingAlert = form.querySelector('.alert');
+      if (existingAlert) {
+        existingAlert.remove();
+      }
+      
+      // Cria novo alerta
+      const alert = document.createElement('div');
+      alert.className = `alert alert-${type}`;
+      alert.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+        ${message}
+      `;
+      
+      // Insere antes do formulário
+      form.prepend(alert);
+      
+      // Remove após 5 segundos
+      setTimeout(() => {
+        alert.remove();
+      }, 5000);
+    }
+    
+    // Verificar se há sessão ativa ao carregar a página
+    window.addEventListener('DOMContentLoaded', () => {
+      checkExistingSession();
+    });
+  </script>
+</body>
+</html>
