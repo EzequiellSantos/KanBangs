@@ -11,7 +11,10 @@
       @select-board="selecionarQuadro"
       @carregar-boards="carregarBoards"
     />
-    <Main :currentBoard="currentBoard" />
+    <Main
+      :currentBoard="currentBoard"
+      @refresh-board="carregarBoards"
+    />
     <Shortcuts />
     <Footer />
   </div>
@@ -46,8 +49,6 @@ export default {
   },
   computed: {
     currentBoard() {
-      this.carregarBoards()
-      console.log("pika")
       return this.boards.find(b => b._id === this.activeBoardId) || null
     },
     theme() {
@@ -117,4 +118,3 @@ export default {
   }
 }
 </script>
-   

@@ -6,7 +6,7 @@
     </div>
     <div>
       <button class="ghost" @click="$emit('add-column')">+ a</button>
-      <button @click="$emit('export-json')">Exportar JSON</button>
+      <!-- <button @click="$emit('export-json')">Exportar JSON</button> -->
     </div>
   </div>
 </template>

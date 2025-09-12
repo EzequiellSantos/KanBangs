@@ -17,14 +17,14 @@ router.post('/', async (req, res) => {
 
 // UPDATE column
 router.put('/:id', async (req, res) => {
-  const column = await Column.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  const column = await Column.findOneAndDelete({ _id: req.params.id, ...req.body }, { new: true });
   res.json(column);
 });
 
 // DELETE column
 router.delete('/:id', async (req, res) => {
-  const col = await Column.findByIdAndDelete(req.params.id);
-  res.sendStatus(204).json({ message: 'Coluna removida com sucesso', data: col });
+  const col = await Column.findOneAndDelete({ _id: req.params.id });
+  res.status(200).json({ message: 'Coluna removida com sucesso'});
 });
 
 module.exports = router;

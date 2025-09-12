@@ -21,7 +21,7 @@
     <!-- Botões de controle -->
     <div class="controls">
       <button @click="abrirModalNovoQuadro">+ Novo quadro</button>
-      <button class="ghost" @click="$emit('import-json')">Importar JSON</button>
+      <!-- <button class="ghost" @click="$emit('import-json')">Importar JSON</button> -->
       <button class="ghost" @click="deleteBoard">Apagar</button>
       <p v-if="modalNovoQuadroVisivel">O modal de configurações está visível!</p>
 

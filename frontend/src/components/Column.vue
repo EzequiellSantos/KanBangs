@@ -51,6 +51,16 @@
       <input v-model="tarefaEditandoTitulo" type="text" placeholder="Novo título da tarefa" />
     </Modal>
 
+    <!-- Modal: Renomear Coluna -->
+    <Modal
+      :visible="modalRenomearVisivel"
+      title="Renomear Coluna"
+      @ok="confirmarRenomearColuna"
+      @cancel="modalRenomearVisivel = false"
+    >
+      <input v-model="novoTituloColuna" type="text" placeholder="Novo título da coluna" />
+    </Modal>
+
     <!-- Rodapé -->
     <div class="column-footer">Arraste tarefas aqui</div>
 
@@ -89,6 +99,10 @@ const modalEditarVisivel = ref(false)
 const tarefaEditando = ref(null)
 const tarefaEditandoTitulo = ref('')
 
+// ▼ Modal: Renomear Coluna
+const modalRenomearVisivel = ref(false)
+const novoTituloColuna = ref('')
+
 // ▼ Menu da coluna
 const menuVisible = ref(false)
 function toggleMenu() {
@@ -118,6 +132,19 @@ function confirmarEditarTarefa() {
   modalEditarVisivel.value = false
 }
 
+// ▼ Renomear coluna
+function onRenameColumn() {
+  novoTituloColuna.value = props.column.title
+  modalRenomearVisivel.value = true
+}
+
+function confirmarRenomearColuna() {
+  if (novoTituloColuna.value.trim()) {
+    emit('rename-column', props.column._id, novoTituloColuna.value.trim())
+  }
+  modalRenomearVisivel.value = false
+}
+
 // ▼ Apagar tarefa
 function onDeleteTask(taskId) {
   if (confirm('Apagar esta tarefa?')) {
@@ -125,18 +152,10 @@ function onDeleteTask(taskId) {
   }
 }
 
-// ▼ Renomear coluna
-function onRenameColumn() {
-  const newTitle = prompt('Novo nome da coluna:', props.column.title)
-  if (newTitle && newTitle.trim()) {
-    emit('rename-column', props.column.id, newTitle.trim())
-  }
-}
-
 // ▼ Apagar coluna
 function onDeleteColumn() {
   if (confirm('Apagar esta coluna e todas as suas tarefas?')) {
-    emit('delete-column', props.column.id)
+    emit('delete-column', props.column._id);
   }
 }
 

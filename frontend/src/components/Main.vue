@@ -9,19 +9,18 @@
       </div>
       <div>
         <button class="ghost" @click="abrirModalColuna">+ Coluna</button>
-        <button @click="$emit('export-board')">Exportar JSON</button>
+        <!-- <button @click="$emit('export-board')">Exportar JSON</button> -->
       </div>
     </div>
 
     <!-- Colunas -->
     <div v-if="currentBoard && currentBoard.columns?.length" class="columns-wrap" tabindex="0" aria-live="polite">
-      <Column
-  v-for="col in currentBoard.columns"
-  :key="col._id"
-  :column="col"
-  @delete-task="taskId => handleDeleteTask(col._id, taskId)"
-  @add-task="handleAddTask"
-/>
+    <Column
+      v-for="col in currentBoard.columns"
+      :key="col._id"
+      :column="col"
+      @delete-column="handleDeleteColumn"
+    />
     </div>
 
     <!-- Estado vazio -->
@@ -114,8 +113,6 @@ async function confirmarColuna() {
     // Aqui você pode emitir um evento para o pai ou atualizar o board
     // this.$emit('add-column', this.nomeColuna)
 
-    console.log("pika")
-
     await fetch(`${BASE_URL}/api/columns`, {
       method: 'POST',
       headers: {
@@ -136,5 +133,25 @@ async function confirmarColuna() {
     })
   }
   fecharModalColuna()
+}
+
+function handleDeleteColumn(colId) {
+  const userToken = localStorage.getItem('token')
+  fetch(`${BASE_URL}/api/columns/${colId}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json',
+      'x-api-key': BASE_API_KEY
+    }
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      console.log('Coluna apagada:', data)
+      emit('refresh-board', props.currentBoard._id)
+    })
+    .catch(err => {
+      console.error('Erro ao apagar coluna:', err)
+    })
 }
 </script>

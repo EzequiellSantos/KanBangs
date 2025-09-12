@@ -54,6 +54,8 @@
       max-width: var(--max-width);
       margin: 28px auto;
       display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
       gap: 18px;
       padding: 18px;
       min-height: calc(100vh - 200px);
@@ -196,6 +198,8 @@
     /* Main area */
     .main {
       flex: 1;
+      width: 100%;
+      min-width: 400px;
       min-height: 60vh;
       background: var(--card);
       border-radius: var(--radius);
