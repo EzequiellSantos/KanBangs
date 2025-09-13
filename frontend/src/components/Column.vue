@@ -200,7 +200,8 @@ function onDrop(event) {
 
       let index = 0
       let cumulative = 0
-      const children = Array.from(tasksWrap.children)
+      // Só considera elementos com a classe .task
+      const children = Array.from(tasksWrap.querySelectorAll('.task'))
 
       for (let i = 0; i < children.length; i++) {
         const height = children[i].getBoundingClientRect().height + 8
@@ -209,6 +210,7 @@ function onDrop(event) {
       }
 
       emit('move-task', payload.fromCol, toColId, payload.taskId, index)
+      console.log(`Mover tarefa ${payload.taskId} de ${payload.fromCol} para ${toColId} na posição ${index}`)
     }
   } catch (err) {
     console.error('Erro ao processar drop:', err)

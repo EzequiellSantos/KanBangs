@@ -11,39 +11,31 @@ router.use(auth);
 // GET todos os boards do usuário logado, com colunas e tarefas
 router.get('/', async (req, res) => {
   try {
-    // 1. Buscar boards do usuário e popular colunas
     const boards = await Board.find({ userId: req.user._id })
-      .populate('columns')
-      .lean(); // importante para manipular os dados depois
+      .populate({
+        path: 'columns',
+        populate: {
+          path: 'tasks'
+        }
+      });
 
-    // 2. Para cada board, buscar tasks de cada coluna
-    const boardsComTarefas = await Promise.all(
-      boards.map(async (board) => {
-        const columnsWithTasks = await Promise.all(
-          (board.columns || []).map(async (col) => {
-            const tasks = await Task.find({ columnId: col._id }).lean();
-            return {
-              ...col,
-              tasks: tasks || []
-            };
-          })
-        );
-
-        return {
-          ...board,
-          columns: columnsWithTasks
-        };
-      })
-    );
-
-    // 3. Responder com boards + colunas + tasks
-    res.json({ error: null, data: boardsComTarefas });
-  } catch (err) {
-    console.error('[GET /boards] Erro:', err);
-    res.status(500).json({
-      error: 'Erro ao buscar boards',
-      message: err.message
+    // Reordene as tasks de cada coluna conforme o array de IDs
+    boards.forEach(board => {
+      board.columns.forEach(col => {
+        if (col.tasks && Array.isArray(col.tasks) && col.tasks.length && col.tasks[0]._id) {
+          // col.tasks: array de objetos populados
+          // col.tasks (no schema): array de ids
+          const idOrder = col.tasks.map(t => t._id.toString());
+          col.tasks.sort((a, b) => {
+            return idOrder.indexOf(a._id.toString()) - idOrder.indexOf(b._id.toString());
+          });
+        }
+      });
     });
+
+    res.json({ data: boards });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao buscar boards', details: err });
   }
 });
 

@@ -4,7 +4,6 @@
       :boards="boards"
       :activeBoardId="activeBoardId"
       :pageTitle="pageTitle"
-      @new-board="criarQuadro"
       @import-json="importarJson"
       @delete-board="apagarQuadro"
       @open-settings="abrirConfiguracoes"

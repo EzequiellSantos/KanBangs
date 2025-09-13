@@ -25,6 +25,7 @@
       @delete-column="handleDeleteColumn"
       @drag-column="handleDragColumn"
       @drop-column="handleDropColumn"
+      @move-task="handleMoveTask"
     />
     </div>
 
@@ -223,4 +224,35 @@ function onRenameColumn(colId, newTitle) {
     })
 }
 
+function handleMoveTask(fromColId, toColId, taskId, toIndex) {
+  const userToken = localStorage.getItem('token')
+  fetch(`${BASE_URL}/api/tasks/move`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json',
+      'x-api-key': BASE_API_KEY
+    },
+    body: JSON.stringify({
+      fromColId,
+      toColId,
+      taskId,
+      toIndex
+    })
+  })
+  .then(resp => resp.json())
+  .then(data => {
+    // Atualize a coluna localmente (opcional, para resposta rápida)
+    if (data.column && props.currentBoard) {
+      const colIdx = props.currentBoard.columns.findIndex(c => c._id === data.column._id)
+      if (colIdx !== -1) {
+        props.currentBoard.columns[colIdx].tasks = data.column.tasks
+      }
+    }
+    emit('refresh-board', props.currentBoard._id)
+  })
+  .catch(err => {
+    console.error('Erro ao mover tarefa:', err)
+  })
+}
 </script>
