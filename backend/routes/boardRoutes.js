@@ -98,4 +98,30 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// REORDER columns in a board
+router.post('/:boardId/columns/reorder', async (req, res) => {
+  const { fromColId, toIndex } = req.body;
+  const { boardId } = req.params;
+
+  try {
+    const board = await Board.findById(boardId);
+    if (!board) return res.status(404).json({ error: 'Board não encontrado' });
+
+    // Remove coluna da posição original
+    const colIndex = board.columns.findIndex(id => id.toString() === fromColId);
+    if (colIndex === -1) return res.status(404).json({ error: 'Coluna não encontrada no board' });
+
+    const [removed] = board.columns.splice(colIndex, 1);
+
+    // Insere na nova posição
+    board.columns.splice(toIndex, 0, removed);
+
+    await board.save();
+
+    res.status(200).json({ message: 'Ordem das colunas atualizada', columns: board.columns });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro ao reordenar colunas', details: err });
+  }
+});
+
 module.exports = router;

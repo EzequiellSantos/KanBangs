@@ -1,5 +1,10 @@
 <template>
-  <section class="column" :data-col-id="column.id">
+  <section
+    class="column"
+    :data-col-id="column._id"
+    @drop="onDropColumn"
+    @dragover.prevent
+  >
     <!-- Cabeçalho -->
     <div class="column-header">
       <div>
@@ -112,7 +117,7 @@ function toggleMenu() {
 // ▼ Criar tarefa
 function confirmarNovaTarefa() {
   if (novaTarefaTitulo.value.trim()) {
-    emit('add-task', props.column.id, novaTarefaTitulo.value.trim())
+    emit('add-task', props.column._id, novaTarefaTitulo.value.trim())
     novaTarefaTitulo.value = ''
   }
   modalNovaVisivel.value = false
@@ -127,7 +132,7 @@ function abrirModalEditarTarefa(task) {
 
 function confirmarEditarTarefa() {
   if (tarefaEditandoTitulo.value.trim()) {
-    emit('edit-task', props.column.id, tarefaEditando.value._id, tarefaEditandoTitulo.value.trim())
+    emit('edit-task', props.column._id, tarefaEditando.value._id, tarefaEditandoTitulo.value.trim())
   }
   modalEditarVisivel.value = false
 }
@@ -148,7 +153,7 @@ function confirmarRenomearColuna() {
 // ▼ Apagar tarefa
 function onDeleteTask(taskId) {
   if (confirm('Apagar esta tarefa?')) {
-    emit('delete-task', props.column.id, taskId)
+    emit('delete-task', props.column._id, taskId)
   }
 }
 
@@ -164,7 +169,7 @@ function startTaskDrag(taskId) {
   const payload = {
     type: 'task',
     taskId,
-    fromCol: props.column.id
+    fromCol: props.column._id
   }
   event.dataTransfer.setData('text/plain', JSON.stringify(payload))
   event.dataTransfer.effectAllowed = 'move'
@@ -188,7 +193,7 @@ function onDrop(event) {
   try {
     const payload = JSON.parse(event.dataTransfer.getData('text/plain'))
     if (payload.type === 'task') {
-      const toColId = props.column.id
+      const toColId = props.column._id
       const tasksWrap = event.currentTarget
       const rect = tasksWrap.getBoundingClientRect()
       const y = event.clientY - rect.top
@@ -214,13 +219,20 @@ function onDrop(event) {
 function startColumnDrag(event) {
   event.dataTransfer.setData('text/plain', JSON.stringify({
     type: 'column',
-    colId: props.column.id
+    colId: props.column._id
   }))
   event.currentTarget.closest('.column').style.opacity = '0.5'
-  emit('drag-column', props.column.id)
+  emit('drag-column', props.column._id)
 }
 function endColumnDrag(event) {
   event.currentTarget.closest('.column').style.opacity = '1'
+}
+function onDropColumn(event) {
+  const payload = JSON.parse(event.dataTransfer.getData('text/plain'))
+  if (payload.type === 'column') {
+    // O índice já está correto via props.columnIndex
+    emit('drop-column', props.column._id, props.columnIndex)
+  }
 }
 </script>
 

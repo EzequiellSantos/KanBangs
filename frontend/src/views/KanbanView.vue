@@ -14,6 +14,9 @@
     <Main
       :currentBoard="currentBoard"
       @refresh-board="carregarBoards"
+      @add-task="adicionarTask"
+      @delete-task="deletarTask"
+      @rename-task="renomearTask"
     />
     <Shortcuts />
     <Footer />
@@ -107,8 +110,76 @@ export default {
     },
     abrirConfiguracoes() {},
     exportarBoard() {},
-    deletarTask(colId, taskId) {},
-    adicionarTask(colId) {},
+    async deletarTask(colId, taskId, taskTitle) {
+      console.log('Deletar tarefa na coluna:', colId, 'ID da tarefa:', taskId, 'Título da tarefa:', taskTitle)
+
+      await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${this.userToken}`,
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        }
+      })
+        .then(resp => resp.json())
+        .then(data => {
+          console.log('Tarefa apagada:', data)
+          this.carregarBoards()
+        })
+        .catch(err => {
+          console.error('Erro ao apagar tarefa:', err)
+        })
+
+    },
+    async adicionarTask(colId, taskTitle) {
+      console.log('Adicionar tarefa na coluna:', colId, 'Título da tarefa:', taskTitle)
+
+      await fetch(`${BASE_URL}/api/tasks`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${this.userToken}`,
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        },
+        body: JSON.stringify({
+          userId: this.userId,
+          columnId: colId,
+          title: taskTitle
+        })
+      })
+        .then(resp => resp.json())
+        .then(data => {
+          console.log('Tarefa adicionada:', data)
+          this.carregarBoards()
+        })
+        .catch(err => {
+          console.error('Erro ao adicionar tarefa:', err)
+        })
+    },
+    async renomearTask(colId, taskId, newTitle) {
+      console.log('Renomear tarefa na coluna:', colId, 'ID da tarefa:', taskId, 'Novo título:', newTitle)
+
+      await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${this.userToken}`,
+          'Content-Type': 'application/json',
+          'x-api-key': this.apiKey
+        },
+        body: JSON.stringify({
+          columnId: colId,
+          title: newTitle
+        })
+      })
+        .then(resp => resp.json())
+        .then(data => {
+          console.log('Tarefa renomeada:', data)
+          this.carregarBoards()
+        })
+        .catch(err => {
+          console.error('Erro ao renomear tarefa:', err)
+        })
+    },
     toggleTheme() {
       useUIStore().toggleDarkMode()
     }

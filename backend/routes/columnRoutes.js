@@ -17,8 +17,15 @@ router.post('/', async (req, res) => {
 
 // UPDATE column
 router.put('/:id', async (req, res) => {
-  const column = await Column.findOneAndDelete({ _id: req.params.id, ...req.body }, { new: true });
-  res.json(column);
+
+  try{
+    const column = await Column.findOneAndUpdate({ _id: req.params.id}, {$set: req.body }, { new: true });
+    res.status(200).json({data: column});
+  }
+  catch(err){
+    res.status(500).json({ message: 'Erro ao atualizar coluna', error: err });
+  }
+
 });
 
 // DELETE column

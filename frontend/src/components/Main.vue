@@ -16,10 +16,15 @@
     <!-- Colunas -->
     <div v-if="currentBoard && currentBoard.columns?.length" class="columns-wrap" tabindex="0" aria-live="polite">
     <Column
-      v-for="col in currentBoard.columns"
+      v-for="(col, idx) in currentBoard.columns"
       :key="col._id"
       :column="col"
+      :columnIndex="idx"
+      @add-task="handleAddTask"
+      @delete-task="handleDeleteTask"
       @delete-column="handleDeleteColumn"
+      @drag-column="handleDragColumn"
+      @drop-column="handleDropColumn"
     />
     </div>
 
@@ -64,20 +69,61 @@ const emit = defineEmits([
   'export-board',
   'delete-task',
   'add-task',
-  'refresh-board'
+  'refresh-board',
+  'drop-column', // Adicione esta linha!,
+  'rename-task'
 ])
 
 const image = ref(null)
 const modalColunaVisivel = ref(false)
 const nomeColuna = ref('')
-
+const draggedColumnId = ref(null)
 
 function handleDeleteTask(colId, taskId) {
   emit('delete-task', colId, taskId)
+  emit('refresh-board', props.currentBoard._id)
 }
 
-function handleAddTask(colId) {
-  emit('add-task', colId)
+function renameTask(colId, taskId, newTitle) {
+  emit('rename-task', colId, taskId, newTitle)
+  emit('refresh-board', props.currentBoard._id)
+}
+
+function handleDragColumn(colId) {
+  // Guarde o id da coluna sendo arrastada
+  draggedColumnId.value = colId
+}
+
+function handleDropColumn(targetColId, targetIndex) {
+  // Se a coluna de origem e destino forem iguais, não faz nada
+  if (draggedColumnId.value === targetColId) return;
+
+  fetch(`${BASE_URL}/api/boards/${props.currentBoard._id}/columns/reorder`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      'Content-Type': 'application/json',
+      'x-api-key': BASE_API_KEY
+    },
+    body: JSON.stringify({
+      fromColId: draggedColumnId.value,
+      toColId: targetColId,
+      toIndex: targetIndex
+    })
+  })
+  .then(resp => resp.json())
+  .then(data => {
+    emit('refresh-board', props.currentBoard._id)
+    draggedColumnId.value = null // Limpa o estado do drag
+  })
+  .catch(err => {
+    console.error('Erro ao reordenar coluna:', err)
+  })
+}
+
+function handleAddTask(colId, taskTitle) {
+  emit('add-task', colId, taskTitle)
+  emit('refresh-board', props.currentBoard._id)
 }
 
 function onFileSelect(event) {
@@ -154,4 +200,27 @@ function handleDeleteColumn(colId) {
       console.error('Erro ao apagar coluna:', err)
     })
 }
+
+function onRenameColumn(colId, newTitle) {
+  const userToken = localStorage.getItem('token')
+  console.log(colId, newTitle)
+  fetch(`${BASE_URL}/api/columns/${colId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${userToken}`,
+      'Content-Type': 'application/json',
+      'x-api-key': BASE_API_KEY
+    },
+    body: JSON.stringify({ title: newTitle })
+  })
+    .then(resp => resp.json())
+    .then(data => {
+      console.log('Coluna renomeada:', data)
+      emit('refresh-board', props.currentBoard._id)
+    })
+    .catch(err => {
+      console.error('Erro ao renomear coluna:', err)
+    })
+}
+
 </script>
