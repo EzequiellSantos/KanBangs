@@ -65,7 +65,7 @@ export default {
       max-width: var(--max-width);
       margin: 28px auto;
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 18px;
       padding: 18px;
       min-height: calc(100vh - 200px);
@@ -259,6 +259,15 @@ export default {
       align-items: center;
       justify-content: space-between;
       gap: 8px;
+    }
+
+    .column-footer{
+      margin-top: auto; 
+      padding-top: 8px; 
+      font-size: 13px; 
+      color: var(--muted); 
+      user-select: none; 
+      cursor: pointer;
     }
 
     .column-title {

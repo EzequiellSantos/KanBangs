@@ -23,10 +23,10 @@
       <div
         v-for="task in column.tasks"
         :key="task._id"
-        class="task"
+        :class="['task', { dragging: isDragging }]"
         draggable="true"
-        @dragstart="startTaskDrag(task._id)"
-        @dragend="endTaskDrag"
+        @dragstart="startTaskDrag(task._id), isDragging = true"
+        @dragend="endTaskDrag, isDragging = false"
         @dblclick="abrirModalEditarTarefa(task)"
       >
         {{ task.title }}
@@ -171,6 +171,7 @@ function startTaskDrag(taskId) {
     taskId,
     fromCol: props.column._id
   }
+  
   event.dataTransfer.setData('text/plain', JSON.stringify(payload))
   event.dataTransfer.effectAllowed = 'move'
 }
@@ -210,7 +211,7 @@ function onDrop(event) {
       }
 
       emit('move-task', payload.fromCol, toColId, payload.taskId, index)
-      console.log(`Mover tarefa ${payload.taskId} de ${payload.fromCol} para ${toColId} na posição ${index}`)
+
     }
   } catch (err) {
     console.error('Erro ao processar drop:', err)

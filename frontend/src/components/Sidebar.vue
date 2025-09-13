@@ -23,7 +23,7 @@
       <button @click="abrirModalNovoQuadro">+ Novo quadro</button>
       <!-- <button class="ghost" @click="$emit('import-json')">Importar JSON</button> -->
       <button class="ghost" @click="deleteBoard">Apagar</button>
-      <p v-if="modalNovoQuadroVisivel">O modal de configurações está visível!</p>
+
 
     </div>
 
@@ -147,9 +147,6 @@ export default {
     },
     handleBoardSelect(boardId) {
       this.$emit('select-board', boardId)
-      // Se quiser, pode atualizar o activeBoardId localmente também
-      // this.activeBoardId = boardId
-      console.log('Board selecionado:', boardId)
     },
     deleteBoard() {
       if (this.activeBoardId) {
