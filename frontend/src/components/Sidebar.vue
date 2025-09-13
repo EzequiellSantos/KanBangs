@@ -56,10 +56,6 @@
           <input v-model="configTitulo" type="text" />
         </label>
         <label>
-          Emoji do favicon:
-          <input v-model="configEmoji" type="text" maxlength="2" style="width: 3em;" />
-        </label>
-        <label>
           URL do Spotify:
           <input v-model="configSpotify" type="url" placeholder="URL do Spotify"/>
         </label>
@@ -101,7 +97,6 @@ export default {
       // Modal Configurações
       modalConfigVisivel: false,
       configTitulo: 'Kanban — Domarco',
-      configEmoji: '📋',
       configSpotify: '',
       apiUrl: BASE_URL,
       apiKey: BASE_API_KEY,

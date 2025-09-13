@@ -1,24 +1,28 @@
 <template>
+
+  <div :data-theme="theme" class="container-view">
+
     <div :data-theme="theme" class="app">
-    <Sidebar
-      :boards="boards"
-      :activeBoardId="activeBoardId"
-      :pageTitle="pageTitle"
-      @import-json="importarJson"
-      @delete-board="apagarQuadro"
-      @open-settings="abrirConfiguracoes"
-      @select-board="selecionarQuadro"
-      @carregar-boards="carregarBoards"
-    />
-    <Main
-      :currentBoard="currentBoard"
-      @refresh-board="carregarBoards"
-      @add-task="adicionarTask"
-      @delete-task="deletarTask"
-      @rename-task="renomearTask"
-    />
-    <Shortcuts />
-    <Footer />
+      <Sidebar
+        :boards="boards"
+        :activeBoardId="activeBoardId"
+        :pageTitle="pageTitle"
+        @import-json="importarJson"
+        @delete-board="apagarQuadro"
+        @open-settings="abrirConfiguracoes"
+        @select-board="selecionarQuadro"
+        @carregar-boards="carregarBoards"
+      />
+      <Main
+        :currentBoard="currentBoard"
+        @refresh-board="carregarBoards"
+        @add-task="adicionarTask"
+        @delete-task="deletarTask"
+        @rename-task="renomearTask"
+      />
+      <Shortcuts />
+    </div>
+    <Footer />      
   </div>
 </template>
 

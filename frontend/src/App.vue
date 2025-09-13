@@ -1,16 +1,27 @@
 <!-- src/App.vue -->
 <template>
 
-  <div :data-theme="theme" class="app">
+  <div :data-theme="theme" class="container-view">
 
     <router-view />
+
 
   </div>
 
 </template>
 
-<script setup>
+<script>
 
+import Footer from '@/components/Footer.vue'
+
+export default {
+  setup() {
+    
+  },
+  components: {
+    Footer
+  }
+}
 </script>
 
 <style>
@@ -21,7 +32,7 @@
       --card: #0b1220;
       --accent: #06b6d4;
       --muted: #94a3b8;
-      --glass: rgba(255,255,255,0.03);
+      --glass: rgba(255, 255, 255, 0.03);
       --radius: 12px;
       --gap: 12px;
       --max-width: 1200px;
@@ -55,7 +66,6 @@
       margin: 28px auto;
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 18px;
       padding: 18px;
       min-height: calc(100vh - 200px);
@@ -92,6 +102,7 @@
     .board-item {
       padding: 8px 10px;
       border-radius: 10px;
+      margin-block: 8px;
       cursor: pointer;
       transition: background 0.2s ease;
     }
@@ -198,8 +209,6 @@
     /* Main area */
     .main {
       flex: 1;
-      width: 100%;
-      min-width: 400px;
       min-height: 60vh;
       background: var(--card);
       border-radius: var(--radius);
