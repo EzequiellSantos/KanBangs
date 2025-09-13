@@ -16,7 +16,8 @@ const app = express();
 // CORS
 const allowedOrigins = [
   'http://localhost:8080',
-  'https://kanbangs.vercel.app'
+  'https://kanbangs.vercel.app',
+  'https://kan-bangs.vercel.app'
 ];
 
 const corsOptions = {
