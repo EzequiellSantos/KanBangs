@@ -68,7 +68,8 @@ export default {
     },
     async carregarBoards() {
 
-      await fetch(`${this.apiUrl}/api/boards`, {
+      await fetch(`${this.apiUrl}/api/boards/`, {
+        method: 'GET',
         headers: {
           'Authorization': `Bearer ${this.userToken}`,
           'Content-Type': 'application/json',
@@ -77,7 +78,6 @@ export default {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data)
           this.boards = data.data
           if (this.boards.length > 0 && !this.activeBoardId) {
             this.activeBoardId = this.boards[0]._id
@@ -91,8 +91,6 @@ export default {
     importarJson() {},
     async apagarQuadro() {
 
-      console.log("função raiaz",this.activeBoardId)
-
       await fetch(`${this.apiUrl}/api/boards/${this.activeBoardId}`, {
         method: 'DELETE',
         headers: {
@@ -103,7 +101,6 @@ export default {
       })
         .then(res => res.json())
         .then(data => {
-          console.log('Quadro deletado:', data)
           this.carregarBoards()
         })
         .catch(err => {
@@ -114,7 +111,6 @@ export default {
     abrirConfiguracoes() {},
     exportarBoard() {},
     async deletarTask(colId, taskId, taskTitle) {
-      console.log('Deletar tarefa na coluna:', colId, 'ID da tarefa:', taskId, 'Título da tarefa:', taskTitle)
 
       await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: 'DELETE',
@@ -126,7 +122,6 @@ export default {
       })
         .then(resp => resp.json())
         .then(data => {
-          console.log('Tarefa apagada:', data)
           this.carregarBoards()
         })
         .catch(err => {
@@ -135,7 +130,6 @@ export default {
 
     },
     async adicionarTask(colId, taskTitle) {
-      console.log('Adicionar tarefa na coluna:', colId, 'Título da tarefa:', taskTitle)
 
       await fetch(`${BASE_URL}/api/tasks`, {
         method: 'POST',
@@ -152,7 +146,6 @@ export default {
       })
         .then(resp => resp.json())
         .then(data => {
-          console.log('Tarefa adicionada:', data)
           this.carregarBoards()
         })
         .catch(err => {
@@ -160,7 +153,6 @@ export default {
         })
     },
     async renomearTask(colId, taskId, newTitle) {
-      console.log('Renomear tarefa na coluna:', colId, 'ID da tarefa:', taskId, 'Novo título:', newTitle)
 
       await fetch(`${BASE_URL}/api/tasks/${taskId}`, {
         method: 'PUT',
@@ -176,7 +168,6 @@ export default {
       })
         .then(resp => resp.json())
         .then(data => {
-          console.log('Tarefa renomeada:', data)
           this.carregarBoards()
         })
         .catch(err => {
