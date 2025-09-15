@@ -1,5 +1,6 @@
 <template>
   <div :data-theme="theme" class="login-wrapper">
+
     <div class="theme-toggle">
       <div class="toggle-switch" :class="{ active: theme === 'light' }" @click="toggleTheme">
         <div class="toggle-knob">{{ theme === 'dark' ? '🌙' : '☀️' }}</div>
@@ -144,6 +145,7 @@
     <!-- Kanban carregado -->
     <div v-else id="kanbanContainer" v-html="kanbanHtml"></div>
   </div>
+
 </template>
 
 
@@ -228,9 +230,12 @@ export default {
         .then(({ data }) => {
           console.log(data)
           if (data.token) {
+            
             localStorage.setItem('token', data.token)
             localStorage.setItem('userId', data.userId)
+            this.$store.commit('authenticated', { token: data.token, userId: data.userId })
             this.showAlert(data.msg || 'Conta criada com sucesso!', 'success')
+
             this.resetRegisterForm()
             setTimeout(() => {
               this.showRegister = false
@@ -258,15 +263,19 @@ export default {
       })
         .then(response => response.json().then(data => ({ status: response.status, data })))
         .then(({data }) => {
-          console.log(data)
+
           if (data.token) {
+
             localStorage.setItem('token', data.token)
             localStorage.setItem('userId', data.userId)
             this.showAlert(data.msg || 'Login realizado com sucesso!', 'success')
+            this.$store.commit('authenticated', { token: data.token, userId: data.userId })
             setTimeout(() => this.$router.push('/'), 1000)
+
           } else {
             this.showAlert(data.error || 'E-mail ou senha incorretos.', 'error')
           }
+
         })
         .catch(() => {
           this.showAlert('Erro de conexão.', 'error')
@@ -352,6 +361,10 @@ export default {
       display: flex;
       flex-direction: column;
       justify-content: center;
+    }
+
+    .login-wrapper {
+      background: var(--card);
     }
 
     /* ===== ELEMENTOS VISUAIS ===== */

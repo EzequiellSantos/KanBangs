@@ -1,7 +1,7 @@
 <!-- src/App.vue -->
 <template>
 
-  <div :data-theme="theme" class="container-view">
+  <div class="container-view">
 
     <router-view />
 

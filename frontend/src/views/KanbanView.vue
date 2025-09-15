@@ -33,6 +33,7 @@ import Sidebar from '@/components/Sidebar.vue'
 import Main from '@/components/Main.vue'
 import Footer from '@/components/Footer.vue'
 import Shortcuts from '@/components/ShortcutsFAB.vue'
+import store from '@/store/index.js'
 
 export default {
   name: 'KanbanView',
@@ -55,11 +56,20 @@ export default {
   },
   computed: {
     currentBoard() {
+
       return this.boards.find(b => b._id === this.activeBoardId) || null
+
     },
     theme() {
       // Corrigido para Pinia
       return useUIStore().darkMode ? 'dark' : 'light'
+    }
+  },
+  mounted(){
+    if(store.state.authenticated){
+      this.carregarBoards()
+    } else {
+      this.$router.push('/login')
     }
   },
   methods: {
@@ -177,9 +187,6 @@ export default {
     toggleTheme() {
       useUIStore().toggleDarkMode()
     }
-  },
-  async mounted() {
-    await this.carregarBoards()
   }
 }
 </script>
